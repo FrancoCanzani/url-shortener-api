@@ -2,7 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const { schema } = require('../utils/schema');
+const yup = require('yup');
+const monk = require('monk');
+
+require('dotenv').config();
+
+const db = monk(process.env.MONGO_URL);
+const urls = db.get('urls');
+urls.createIndex('name');
+
 const app = express();
 
 app.use(helmet());
@@ -10,7 +18,17 @@ app.use(morgan('tiny'));
 app.use(cors());
 app.use(express.json());
 
+const schema = yup.object().shape({
+  slug: yup
+    .string()
+    .trim()
+    .matches(/^[\w\-]+$/i),
+  url: yup.string().trim().url().required(),
+});
+
 app.post('/url', async (req, res) => {
+  console.log('POST request received at /url');
+
   const { slug, url } = req.body;
 
   try {
@@ -23,15 +41,26 @@ app.post('/url', async (req, res) => {
     if (!newSlug) {
       const { nanoid } = await import('nanoid');
       newSlug = nanoid(5);
+    } else {
+      const existing = await urls.findOne({ slug });
+      if (existing) {
+        throw new Error('Slug in use.');
+      }
     }
-    newSlug = newSlug.toLowerCase(); // Corrected toLowerCase method
 
-    res.json({
-      slug,
+    newSlug = newSlug.toLowerCase();
+
+    const newURL = {
       url,
-    });
+      slug,
+      clicks: 0,
+    };
+
+    const created = await urls.insert(newURL);
+    res.json(created);
   } catch (error) {
-    res.redirect(`/?error=Link not found`);
+    console.error('Validation Error:', error);
+    res.status(400).json({ error: error.message });
   }
 });
 
