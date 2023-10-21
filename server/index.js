@@ -33,18 +33,18 @@ app.post('/url', async (req, res) => {
   const { slug, url } = req.body;
 
   try {
-    await schema.validate({
-      slug,
-      url,
-    });
+    console.log('Validating data:', { slug, url });
+    await schema.validate({ slug, url });
 
     let newSlug = slug;
     if (!newSlug) {
       const { nanoid } = await import('nanoid');
       newSlug = nanoid(5);
+      console.log('Generated new slug:', newSlug);
     } else {
       const existing = await urls.findOne({ slug });
       if (existing) {
+        console.error('Error: Slug in use 🐌.');
         throw new Error('Slug in use 🐌.');
       }
     }
@@ -57,7 +57,11 @@ app.post('/url', async (req, res) => {
       clicks: 0,
     };
 
+    console.log('Inserting into the database:', newURL);
     const created = await urls.insert(newURL);
+
+    console.log('URL created:', created);
+
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(created);
   } catch (error) {
@@ -100,9 +104,15 @@ app.use((error, req, res, next) => {
 
 const port = process.env.PORT || 3001;
 
-const server = app.listen(port, () =>
-  console.log(`Example app listening on port ${port}!`)
-);
+const server = app.listen(port, async () => {
+  try {
+    await db.authenticate(); // Check if the database connection is successful
+    console.log('Database connection successful');
+    console.log(`Example app listening on port ${port}!`);
+  } catch (error) {
+    console.error('Error connecting to the database:', error);
+  }
+});
 
 server.keepAliveTimeout = 120 * 1000;
 server.headersTimeout = 120 * 1000;
