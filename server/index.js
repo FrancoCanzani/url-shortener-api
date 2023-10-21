@@ -38,7 +38,7 @@ app.post('/url', async (req, res) => {
       url,
     });
 
-    let newSlug = slug; // Assign the value to a new variable
+    let newSlug = slug;
     if (!newSlug) {
       const { nanoid } = await import('nanoid');
       newSlug = nanoid(5);
@@ -65,18 +65,6 @@ app.post('/url', async (req, res) => {
   }
 });
 
-app.use((error, req, res, next) => {
-  if (error.status) {
-    res.status(error.status);
-  } else {
-    res.status(500);
-  }
-  res.json({
-    message: error.message,
-    stack: process.env.NODE_ENV === 'production' ? '🥞' : error.stack,
-  });
-});
-
 app.get('/:id', async (req, res) => {
   const { id: slug } = req.params;
 
@@ -97,7 +85,23 @@ app.get('/', (req, res) => {
   });
 });
 
-const port = process.env.Port || 3001;
-app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}`);
+app.use((error, req, res, next) => {
+  if (error.status) {
+    res.status(error.status);
+  } else {
+    res.status(500);
+  }
+  res.json({
+    message: error.message,
+    stack: process.env.NODE_ENV === 'production' ? '🥞' : error.stack,
+  });
 });
+
+const port = process.env.PORT || 3001;
+
+const server = app.listen(port, () =>
+  console.log(`Example app listening on port ${port}!`)
+);
+
+server.keepAliveTimeout = 120 * 1000;
+server.headersTimeout = 120 * 1000;
