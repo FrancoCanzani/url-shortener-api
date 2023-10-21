@@ -53,7 +53,7 @@ app.post('/url', async (req, res) => {
 
     const newURL = {
       url,
-      slug,
+      newSlug,
       clicks: 0,
     };
 
