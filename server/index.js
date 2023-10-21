@@ -9,7 +9,8 @@ require('dotenv').config();
 
 const db = monk(process.env.MONGO_URL);
 const urls = db.get('urls');
-urls.createIndex('name');
+urls.createIndex('slug');
+urls.createIndex({ slug: 1 }, { index: true });
 
 const app = express();
 
@@ -44,7 +45,7 @@ app.post('/url', async (req, res) => {
     } else {
       const existing = await urls.findOne({ slug });
       if (existing) {
-        throw new Error('Slug in use.');
+        throw new Error('Slug in use 🐌.');
       }
     }
 
@@ -74,6 +75,20 @@ app.use((error, req, res, next) => {
     message: error.message,
     stack: process.env.NODE_ENV === 'production' ? '🥞' : error.stack,
   });
+});
+
+app.get('/:id', async (req, res) => {
+  const { id: slug } = req.params;
+
+  try {
+    const url = await urls.findOne({ slug });
+    if (url) {
+      res.redirect(url.url);
+    }
+    res.redirect(`/?error=${slug} in use`);
+  } catch (error) {
+    res.redirect('/?error=Link not found');
+  }
 });
 
 app.get('/', (req, res) => {
