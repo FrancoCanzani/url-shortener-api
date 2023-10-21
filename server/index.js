@@ -10,7 +10,7 @@ app.use(morgan('tiny'));
 app.use(cors());
 app.use(express.json());
 
-app.get('/:id', (req, res) => {
+app.get('/', (req, res) => {
   res.json({
     message: 'URL shortener tooling',
   });
