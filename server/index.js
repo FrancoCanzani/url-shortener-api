@@ -106,8 +106,6 @@ const port = process.env.PORT || 3001;
 
 const server = app.listen(port, async () => {
   try {
-    await db.authenticate(); // Check if the database connection is successful
-    console.log('Database connection successful');
     console.log(`Example app listening on port ${port}!`);
   } catch (error) {
     console.error('Error connecting to the database:', error);
