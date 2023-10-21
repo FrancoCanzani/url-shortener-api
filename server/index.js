@@ -58,6 +58,7 @@ app.post('/url', async (req, res) => {
     };
 
     const created = await urls.insert(newURL);
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(created);
   } catch (error) {
     console.error('Validation Error:', error);
