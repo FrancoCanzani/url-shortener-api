@@ -76,6 +76,7 @@ app.get('/:id', async (req, res) => {
   try {
     const url = await urls.findOne({ slug });
     if (url) {
+      await urls.update({ slug }, { $set: { clicks: url.clicks } }); // Update the clicks count in the database
       res.redirect(url.url);
     }
     res.redirect(`/?error=${slug} in use`);
