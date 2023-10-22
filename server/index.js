@@ -42,7 +42,7 @@ app.post('/url', async (req, res) => {
       newSlug = nanoid(5);
       console.log('Generated new slug:', newSlug);
     } else {
-      const existing = await urls.findOne({ slug });
+      const existing = await urls.findOne({ slug }); // Use slug here
       if (existing) {
         console.error('Error: Slug in use 🐌.');
         throw new Error('Slug in use 🐌.');
@@ -53,7 +53,7 @@ app.post('/url', async (req, res) => {
 
     const newURL = {
       url,
-      newSlug,
+      slug: newSlug, // Correctly use newSlug
       clicks: 0,
     };
 
@@ -72,14 +72,19 @@ app.post('/url', async (req, res) => {
 
 app.get('/:id', async (req, res) => {
   const { id: slug } = req.params;
+  const decodedSlug = decodeURIComponent(slug); // Decode the URL parameter
 
   try {
-    const url = await urls.findOne({ slug });
+    const url = await urls.findOne({ slug: decodedSlug }); // Use the decodedSlug in the query
     if (url) {
-      await urls.update({ slug }, { $set: { clicks: url.clicks } }); // Update the clicks count in the database
+      await urls.update(
+        { slug: decodedSlug },
+        { $set: { clicks: url.clicks } }
+      ); // Update the clicks count in the database
       res.redirect(url.url);
+    } else {
+      res.redirect(`/?error=${decodedSlug} not found`);
     }
-    res.redirect(`/?error=${slug} in use`);
   } catch (error) {
     res.redirect('/?error=Link not found');
   }
