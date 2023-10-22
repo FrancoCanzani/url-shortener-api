@@ -57,15 +57,11 @@ app.post('/url', async (req, res) => {
       clicks: 0,
     };
 
-    console.log('Inserting into the database:', newURL);
     const created = await urls.insert(newURL);
-
-    console.log('URL created:', created);
 
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.json(created);
   } catch (error) {
-    console.error('Validation Error:', error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -79,8 +75,8 @@ app.get('/:id', async (req, res) => {
     if (url) {
       await urls.update(
         { slug: decodedSlug },
-        { $set: { clicks: url.clicks } }
-      ); // Update the clicks count in the database
+        { $inc: { clicks: 1 } } // Use $inc to increment clicks by 1
+      );
       res.redirect(url.url);
     } else {
       res.redirect(`/?error=${decodedSlug} not found`);
@@ -111,11 +107,7 @@ app.use((error, req, res, next) => {
 const port = process.env.PORT || 3001;
 
 const server = app.listen(port, async () => {
-  try {
-    console.log(`Example app listening on port ${port}!`);
-  } catch (error) {
-    console.error('Error connecting to the database:', error);
-  }
+  console.log(`Example app listening on port ${port}!`);
 });
 
 server.keepAliveTimeout = 120 * 1000;
