@@ -1,11 +1,11 @@
 {
   "name": "url-shortener-server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A simple url shortener",
+  "main": "app.js",
   "scripts": {
-    "start": "node server/index.js",
-    "dev": "nodemon server/index.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",

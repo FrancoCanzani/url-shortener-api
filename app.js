@@ -15,8 +15,9 @@ urls.createIndex({ slug: 1 }, { index: true });
 const app = express();
 
 app.use(helmet());
-app.use(morgan('tiny'));
+app.use(morgan('dev'));
 app.use(cors());
+// Parses incoming requests with JSON payloads
 app.use(express.json());
 
 const schema = yup.object().shape({
@@ -28,8 +29,6 @@ const schema = yup.object().shape({
 });
 
 app.post('/url', async (req, res) => {
-  console.log('POST request received at /url');
-
   const { slug, url } = req.body;
 
   try {
@@ -53,7 +52,7 @@ app.post('/url', async (req, res) => {
 
     const newURL = {
       url,
-      slug: newSlug, // Correctly use newSlug
+      slug: newSlug,
       clicks: 0,
     };
 
