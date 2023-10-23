@@ -3,16 +3,14 @@ const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const yup = require('yup');
-const monk = require('monk');
+
+const dbConnect = require('./db/dbConnect');
+const UrlModel = require('./db/urlModel');
 
 require('dotenv').config();
 
-const db = monk(process.env.MONGO_URL);
-const urls = db.get('urls');
-urls.createIndex('slug');
-urls.createIndex({ slug: 1 }, { index: true });
-
 const app = express();
+dbConnect();
 
 app.use(helmet());
 app.use(morgan('dev'));
@@ -32,16 +30,16 @@ app.post('/url', async (req, res) => {
   const { slug, url } = req.body;
 
   try {
-    console.log('Validating data:', { slug, url });
     await schema.validate({ slug, url });
 
     let newSlug = slug;
+
     if (!newSlug) {
       const { nanoid } = await import('nanoid');
       newSlug = nanoid(5);
       console.log('Generated new slug:', newSlug);
     } else {
-      const existing = await urls.findOne({ slug }); // Use slug here
+      const existing = await UrlModel.findOne({ slug });
       if (existing) {
         console.error('Error: Slug in use 🐌.');
         throw new Error('Slug in use 🐌.');
@@ -50,16 +48,17 @@ app.post('/url', async (req, res) => {
 
     newSlug = newSlug.toLowerCase();
 
-    const newURL = {
+    const newURL = new UrlModel({
       url,
       slug: newSlug,
       clicks: 0,
-    };
+      date: new Date(),
+    });
 
-    const created = await urls.insert(newURL);
+    await newURL.save();
 
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.json(created);
+    res.json(newURL);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -70,9 +69,9 @@ app.get('/:id', async (req, res) => {
   const decodedSlug = decodeURIComponent(slug); // Decode the URL parameter
 
   try {
-    const url = await urls.findOne({ slug: decodedSlug }); // Use the decodedSlug in the query
+    const url = await UrlModel.findOne({ slug: decodedSlug }); // Use the decodedSlug in the query
     if (url) {
-      await urls.update(
+      await UrlModel.update(
         { slug: decodedSlug },
         { $inc: { clicks: 1 } } // Use $inc to increment clicks by 1
       );
