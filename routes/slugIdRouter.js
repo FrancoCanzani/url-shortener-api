@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { UrlModel } from '../db/urlModel.js';
 
-const idRouter = Router();
+const slugIdRouter = Router();
 
-idRouter.get('/:id', async (req, res) => {
+slugIdRouter.get('/:id', async (req, res) => {
   const { id: slug } = req.params;
 
   const decodedSlug = decodeURIComponent(slug); // Decode the URL parameter
@@ -23,4 +23,4 @@ idRouter.get('/:id', async (req, res) => {
   }
 });
 
-export { idRouter };
+export { slugIdRouter };
