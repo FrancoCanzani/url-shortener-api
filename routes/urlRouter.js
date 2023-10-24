@@ -49,26 +49,3 @@ urlRouter.post('/', async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-
-urlRouter.get('/:id', async (req, res) => {
-  const { id: slug } = req.params;
-  console.log(req.params);
-
-  const decodedSlug = decodeURIComponent(slug); // Decode the URL parameter
-  console.log(decodedSlug);
-  try {
-    const url = await UrlModel.findOne({ slug: decodedSlug }); // Use the decodedSlug in the query
-    console.log(url);
-    if (url) {
-      await UrlModel.update(
-        { slug: decodedSlug },
-        { $inc: { clicks: 1 } } // Use $inc to increment clicks by 1
-      );
-      res.redirect(url.url);
-    } else {
-      res.redirect(`/?error=${decodedSlug} not found`);
-    }
-  } catch (error) {
-    res.redirect('/?error=Link not found');
-  }
-});

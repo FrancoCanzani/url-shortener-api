@@ -6,7 +6,8 @@ import 'dotenv/config';
 import { dbConnect } from './db/dbConnect.js';
 
 // routes
-import { urlRouter } from './routes/url.js';
+import { urlRouter } from './routes/urlRouter.js';
+import { idRouter } from './routes/idRouter.js';
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/url', urlRouter);
+app.use('/', idRouter);
 
 app.get('/', (req, res) => {
   res.json({
