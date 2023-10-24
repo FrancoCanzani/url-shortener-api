@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-require('dotenv').config();
+import mongoose from 'mongoose';
+import 'dotenv/config';
 
 const mongoURL = process.env.MONGO_URL;
 
@@ -10,4 +10,4 @@ async function dbConnect() {
   });
 }
 
-module.exports = dbConnect;
+export { dbConnect };
