@@ -2,8 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import 'dotenv/config';
 import { dbConnect } from './db/dbConnect.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // routes
 import { urlRouter } from './routes/urlRouter.js';
@@ -22,10 +27,10 @@ app.use(express.json());
 app.use('/url', urlRouter);
 app.use('/', slugIdRouter);
 
+// Use path.dirname to get the directory name
+app.use('/', express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => {
-  res.json({
-    message: 'URL shortener tooling',
-  });
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.use((error, req, res) => {
