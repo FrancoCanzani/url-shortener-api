@@ -1,9 +1,6 @@
-import { Router } from 'express';
 import { UrlModel } from '../models/urlModel.js';
 
-const slugIdRouter = Router();
-
-slugIdRouter.get('/:id', async (req, res) => {
+export const redirectToURL = async (req, res) => {
   const { id: slug } = req.params;
 
   const decodedSlug = decodeURIComponent(slug); // Decode the URL parameter
@@ -21,6 +18,4 @@ slugIdRouter.get('/:id', async (req, res) => {
   } catch (error) {
     res.redirect('/?error=Link not found');
   }
-});
-
-export { slugIdRouter };
+};

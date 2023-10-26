@@ -5,8 +5,8 @@ import helmet from 'helmet';
 import 'dotenv/config';
 import { dbConnect } from './db/dbConnect.js';
 import { urlRouter } from './routes/urlRouter.js';
-import { slugIdRouter } from './routes/slugIdRouter.js';
 import { qrRouter } from './routes/qrRouter.js';
+import { redirectRouter } from './routes/redirectRouter.js';
 
 const app = express();
 
@@ -20,7 +20,7 @@ app.use(express.json());
 
 // routes
 app.use('/api/v1/url', urlRouter);
-app.use('/api/v1', slugIdRouter);
+app.use('/api/v1', redirectRouter);
 app.use('/api/v1/qr', qrRouter);
 
 app.get('/api/v1', (req, res) => {
