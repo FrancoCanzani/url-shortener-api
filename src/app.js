@@ -2,17 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import 'dotenv/config';
 import { dbConnect } from './db/dbConnect.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// routes
 import { urlRouter } from './routes/urlRouter.js';
 import { slugIdRouter } from './routes/slugIdRouter.js';
+import { qrRouter } from './routes/qrRouter.js';
 
 const app = express();
 
@@ -24,13 +18,13 @@ app.use(cors());
 // Parses incoming requests with JSON payloads
 app.use(express.json());
 
-app.use('/url', urlRouter);
-app.use('/', slugIdRouter);
+// routes
+app.use('/api/v1/url', urlRouter);
+app.use('/api/v1', slugIdRouter);
+app.use('/api/v1/qr', qrRouter);
 
-// Use path.dirname to get the directory name
-app.use('/', express.static(path.join(__dirname, 'public')));
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get('/api/v1', (req, res) => {
+  res.json({ message: 'Clipped Api' });
 });
 
 app.use((error, req, res) => {
@@ -49,9 +43,6 @@ app.use((error, req, res) => {
 
 const port = process.env.PORT ?? 3001;
 
-const server = app.listen(port, async () => {
+app.listen(port, async () => {
   console.log(`Example app listening on port ${port}!`);
 });
-
-server.keepAliveTimeout = 120 * 1000;
-server.headersTimeout = 120 * 1000;

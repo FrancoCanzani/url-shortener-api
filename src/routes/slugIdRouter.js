@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { UrlModel } from '../db/urlModel.js';
+import { UrlModel } from '../models/urlModel.js';
 
 const slugIdRouter = Router();
 

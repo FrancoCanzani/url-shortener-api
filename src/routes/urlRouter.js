@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { nanoid } from 'nanoid';
 import yup from 'yup';
-import { UrlModel } from '../db/urlModel.js';
+import { UrlModel } from '../models/urlModel.js';
 
 export const urlRouter = Router();
 
