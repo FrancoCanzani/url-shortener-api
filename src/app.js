@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import 'dotenv/config';
 import { dbConnect } from './db/dbConnect.js';
 import { urlRouter } from './routes/urlRouter.js';
@@ -18,6 +19,20 @@ app.use(morgan('dev'));
 app.use(cors());
 // Parses incoming requests with JSON payloads
 app.use(express.json());
+
+// Create a rate limiter with desired settings
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Max requests per windowMs
+});
+
+// Apply the rate limiter to specific routes or all routes
+app.use('/api', limiter);
+
+// Custom error handler for rate limiting exceeded
+app.use((req, res) => {
+  res.status(429).json({ error: 'Rate limit exceeded' });
+});
 
 // global middleware to validate api key
 app.use(validateApiKey);
