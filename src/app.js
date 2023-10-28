@@ -5,10 +5,11 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import 'dotenv/config';
 import { dbConnect } from './db/dbConnect.js';
-import { urlRouter } from './routes/urlRouter.js';
+import { linkRouter } from './routes/linkRouter.js';
 import { qrRouter } from './routes/qrRouter.js';
 import { redirectRouter } from './routes/redirectRouter.js';
 import { validateApiKey } from './middleware/validateApiKey.js';
+import linksRouter from './routes/linksRouter.js';
 
 const app = express();
 
@@ -28,14 +29,12 @@ const limiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-// Apply the rate limiter to specific routes or all routes
+// Apply the rate limiter
 app.use('/api', limiter);
 
-// global middleware to validate api key
-app.use(validateApiKey);
-
 // routes
-app.use('/api/v1/url', urlRouter);
+app.use('/api/v1/links', validateApiKey, linkRouter);
+app.use('/api/v1/links', validateApiKey, linksRouter);
 app.use('/api/v1', redirectRouter);
 app.use('/api/v1/qr', qrRouter);
 

@@ -7,10 +7,17 @@ const schema = yup.object().shape({
     .string()
     .trim()
     .matches(/^[\w-]+$/i),
-  url: yup.string().trim().url().required(),
+  url: yup
+    .string()
+    .trim()
+    .matches(
+      /^(https?:\/\/)?(www\.)?[\w-]+(\.\w+)+([/\w-]+)?(\/)?$/,
+      'Please enter a valid URL'
+    )
+    .required(),
 });
 
-export const shortenURL = async (req, res) => {
+export const shortenLink = async (req, res) => {
   const { slug, url } = req.body;
 
   try {

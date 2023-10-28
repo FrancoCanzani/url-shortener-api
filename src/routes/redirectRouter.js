@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { redirectToURL } from '../controllers/redirectController.js';
+import { redirectToLink } from '../controllers/redirectController.js';
 
 const redirectRouter = Router();
 
-redirectRouter.get('/:id', redirectToURL);
+redirectRouter.get('/:id', redirectToLink);
 
 export { redirectRouter };

@@ -1,6 +1,6 @@
 import { UrlModel } from '../models/urlModel.js';
 
-export const redirectToURL = async (req, res) => {
+export const redirectToLink = async (req, res) => {
   const { id: slug } = req.params;
 
   const decodedSlug = decodeURIComponent(slug); // Decode the URL parameter
