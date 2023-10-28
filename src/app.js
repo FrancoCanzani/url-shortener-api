@@ -7,6 +7,7 @@ import { dbConnect } from './db/dbConnect.js';
 import { urlRouter } from './routes/urlRouter.js';
 import { qrRouter } from './routes/qrRouter.js';
 import { redirectRouter } from './routes/redirectRouter.js';
+import { validateApiKey } from './middleware/validateApiKey.js';
 
 const app = express();
 
@@ -18,16 +19,21 @@ app.use(cors());
 // Parses incoming requests with JSON payloads
 app.use(express.json());
 
+// global middleware to validate api key
+app.use(validateApiKey);
+
 // routes
 app.use('/api/v1/url', urlRouter);
 app.use('/api/v1', redirectRouter);
 app.use('/api/v1/qr', qrRouter);
 
 app.get('/api/v1', (req, res) => {
-  res.json({ message: 'Clipped Api' });
+  res.json({
+    message: 'Clipped API V1',
+  });
 });
 
-app.use((error, req, res) => {
+app.use((error, req, res, next) => {
   if (error.status) {
     res.status(error.status).json({
       message: error.message,
@@ -39,6 +45,7 @@ app.use((error, req, res) => {
       stack: process.env.NODE_ENV === 'production' ? '🥞' : error.stack,
     });
   }
+  next();
 });
 
 const port = process.env.PORT ?? 3001;

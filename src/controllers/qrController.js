@@ -6,8 +6,8 @@ export const generateQR = async (req, res) => {
 
   const urlValidation = yup.string().url();
 
-  if (!urlValidation) {
-    res.status(400).send('Invalid URL');
+  if (!urlValidation.isValidSync(decodedURL)) {
+    return res.status(400).send('Invalid URL');
   }
 
   const decodedURL = decodeURIComponent(url);
