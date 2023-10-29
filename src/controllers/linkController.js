@@ -31,8 +31,7 @@ export const shortenLink = async (req, res) => {
     } else {
       const existing = await UrlModel.findOne({ slug });
       if (existing) {
-        console.error('Error: Slug in use 🐌.');
-        throw new Error('Slug in use 🐌.');
+        throw new Error('Slug is already in use 🐌');
       }
     }
 

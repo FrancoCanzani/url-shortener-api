@@ -38,6 +38,10 @@ app.use('/api/v1/links', validateApiKey, linksRouter);
 app.use('/api/v1', redirectRouter);
 app.use('/api/v1/qr', qrRouter);
 
+app.get('/', (req, res) => {
+  res.redirect('/api/v1');
+});
+
 app.get('/api/v1', (req, res) => {
   res.json({
     message: 'Clipped API V1',
