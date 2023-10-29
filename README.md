@@ -21,7 +21,6 @@ This is a URL Shortener API that allows you to shorten URLs, manage links, and g
 1. Clone the repository:
 
 ```bash
-Copy  code
 git  clone  https://github.com/FrancoCanzani/url-shortener-server.git
 
 ```
@@ -29,14 +28,12 @@ git  clone  https://github.com/FrancoCanzani/url-shortener-server.git
 2. Navigate to the project directory:
 
 ```bash
-Copy  code
 cd  url-shortener-server
 ```
 
 3. Install dependencies:
 
 ```bash
-Copy  code
 npm  install
 ```
 
@@ -51,7 +48,6 @@ MONGODB_URI=your_mongodb_uri
 5. Running the Application
 
 ```bash
-Copy  code
 npm  start
 ```
 
