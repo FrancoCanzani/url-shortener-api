@@ -43,7 +43,7 @@ npm  install
 4. Create a .env file in the root directory and add your environment variables:
 
 ```env
-Copy code
+
 API_KEY=your_api_key
 MONGODB_URI=your_mongodb_uri
 ```
@@ -72,10 +72,9 @@ npm  start
   - Body:
 
     ```json
-    Copy code
     {
-    "url":  "your_long_url",
-    "slug": "optional_slug"
+      "url": "your_long_url",
+      "slug": "optional_slug"
     }
     ```
 
